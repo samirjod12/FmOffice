@@ -1,0 +1,82 @@
+const { Workbook, shiftFormula, formatValue, E } = require('../app/js/engine.js');
+let pass = 0, fail = 0;
+function eq(name, got, want) {
+  const g = got && got.code ? got.code : got;
+  const ok = typeof want === 'number' && typeof g === 'number' ? Math.abs(g - want) < 1e-9 : g === want;
+  if (ok) pass++; else { fail++; console.log('FAIL', name, '=> got', g, 'want', want); }
+}
+const wb = new Workbook();
+const set = (a, t) => { const m = /^([A-Z]+)(\d+)$/.exec(a); const c = [...m[1]].reduce((n, ch) => n * 26 + ch.charCodeAt(0) - 64, 0) - 1; wb.setInput(0, +m[2] - 1, c, t); };
+const val = (a) => { const m = /^([A-Z]+)(\d+)$/.exec(a); const c = [...m[1]].reduce((n, ch) => n * 26 + ch.charCodeAt(0) - 64, 0) - 1; return wb.getValue(0, +m[2] - 1, c); };
+const calc = f => { set('Z99', f); return val('Z99'); };
+[['A1', '10'], ['A2', '20'], ['A3', '30'], ['A4', 'hello'], ['B1', '1'], ['B2', '2'], ['B3', '3'], ['C1', 'apple'], ['C2', 'banana'], ['C3', 'apple']].forEach(([a, t]) => set(a, t));
+eq('sum', calc('=SUM(A1:A3)'), 60);
+eq('sum text ignored', calc('=SUM(A1:A4)'), 60);
+eq('avg', calc('=AVERAGE(A1:A3)'), 20);
+eq('prec', calc('=2+3*4'), 14);
+eq('pow unary', calc('=-2^2'), 4);
+eq('paren', calc('=(2+3)*4'), 20);
+eq('pct', calc('=50%'), 0.5);
+eq('concat', calc('="a"&"b"&1'), 'ab1');
+eq('if', calc('=IF(A1>5,"big","small")'), 'big');
+eq('if lazy err', calc('=IF(TRUE,1,1/0)'), 1);
+eq('div0', calc('=1/0'), '#DIV/0!');
+eq('iferror', calc('=IFERROR(1/0,"x")'), 'x');
+eq('vlookup exact', calc('=VLOOKUP(2,B1:C3,2,FALSE)'), 'banana');
+eq('vlookup approx', calc('=VLOOKUP(2.5,B1:C3,2)'), 'banana');
+eq('index/match', calc('=INDEX(A1:A3,MATCH(20,A1:A3,0))'), 20);
+eq('countif', calc('=COUNTIF(C1:C3,"apple")'), 2);
+eq('countif op', calc('=COUNTIF(A1:A3,">15")'), 2);
+eq('sumif', calc('=SUMIF(C1:C3,"apple",A1:A3)'), 40);
+eq('sumifs', calc('=SUMIFS(A1:A3,C1:C3,"apple",B1:B3,">1")'), 30);
+eq('sumproduct', calc('=SUMPRODUCT(A1:A3,B1:B3)'), 140);
+eq('sumproduct arr', calc('=SUMPRODUCT((A1:A3>10)*B1:B3)'), 5);
+eq('round', calc('=ROUND(2.345,2)'), 2.35);
+eq('round neg', calc('=ROUND(-2.5,0)'), -3);
+eq('left', calc('=LEFT("Hello",2)'), 'He');
+eq('proper', calc('=PROPER("hello wORLD")'), 'Hello World');
+eq('text fmt', calc('=TEXT(1234.5,"#,##0.00")'), '1,234.50');
+eq('text date', calc('=TEXT(DATE(2024,3,5),"yyyy-mm-dd")'), '2024-03-05');
+eq('text month', calc('=TEXT(DATE(2024,3,5),"mmmm d, yyyy")'), 'March 5, 2024');
+eq('cross sheet', (() => { wb.addSheet('Data'); wb.setInput(1, 0, 0, '99'); return calc("=Data!A1+1"); })(), 100);
+eq('cycle', (() => { set('D1', '=D2'); set('D2', '=D1'); return val('D1'); })(), '#CIRC!');
+eq('unknown fn', calc('=FOO(1)'), '#NAME?');
+eq('bad parse', calc('=1+'), '#NAME?');
+eq('compare str', calc('="a"="A"'), true);
+eq('whole col', calc('=SUM(B:B)'), 6);
+eq('and/or', calc('=AND(1,OR(0,1))'), true);
+eq('date diff', calc('=DATEDIF(DATE(2020,1,15),DATE(2024,3,1),"Y")'), 4);
+eq('weekday', calc('=WEEKDAY(DATE(2024,3,5))'), 3);
+eq('pmt', Math.round(calc('=PMT(0.05/12,360,200000)') * 100) / 100, -1073.64);
+// shift
+eq('shift', shiftFormula('=A1+$B$2+C$3', 2, 1), '=B3+$B$2+D$3');
+eq('shift range', shiftFormula('=SUM(A1:B2)', 1, 0), '=SUM(A2:B3)');
+eq('shift off', shiftFormula('=A1', -1, 0), '=#REF!');
+// formatting
+eq('fmt pct', formatValue(0.256, '0.0%'), '25.6%');
+eq('fmt cur', formatValue(-1234.5, '$#,##0.00'), '-$1,234.50');
+eq('fmt gen', formatValue(0.1 + 0.2), '0.3');
+eq('fmt big', formatValue(1234567890123), '1.23457E+12');
+eq('fmt time', formatValue(0.75, 'h:mm AM/PM'), '6:00 PM');
+eq('fmt sci', formatValue(12345, '0.00E+00'), '1.23E+04');
+// insert / delete rows
+const w2 = new Workbook();
+w2.setInput(0, 0, 0, '1'); w2.setInput(0, 1, 0, '2'); w2.setInput(0, 2, 0, '3'); w2.setInput(0, 3, 0, '=SUM(A1:A3)');
+w2.insertRows(0, 1, 1);
+eq('insert row ref', w2.getInput(0, 4, 0), '=SUM(A1:A4)');
+eq('insert row val', w2.getValue(0, 4, 0), 6);
+w2.deleteRows(0, 1, 1);
+eq('delete row ref', w2.getInput(0, 3, 0), '=SUM(A1:A3)');
+w2.deleteRows(0, 0, 1);
+eq('delete first', w2.getInput(0, 2, 0), '=SUM(A1:A2)');
+eq('delete first val', w2.getValue(0, 2, 0), 5);
+// json round trip
+const w3 = Workbook.fromJSON(JSON.parse(JSON.stringify(w2.toJSON())));
+eq('json', w3.getValue(0, 2, 0), 5);
+// literal parse
+set('E1', '12%'); eq('pct literal', val('E1'), 0.12); eq('pct display', wb.display(0, 0, 4), '12%');
+set('E2', '2024-03-05'); eq('date literal display', wb.display(0, 1, 4), '2024-03-05');
+set('E3', '1,234'); eq('comma literal', val('E3'), 1234);
+set('E4', "'123"); eq('apostrophe', val('E4'), '123');
+console.log(`${pass} passed, ${fail} failed`);
+process.exit(fail ? 1 : 0);
