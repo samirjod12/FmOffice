@@ -63,3 +63,13 @@ assets/                 logos + 1024px transparent icons
 - [ ] First real build on GitHub + Windows test
 - [ ] Data validation, named ranges, pivot tables
 - [ ] FmOffice Docs / Slides
+
+
+## Update (latest session)
+- **Classic skin**: `app/css/classic.css` makes Sheets look like the Excel-2013 layout the user supplied as reference (FILE tab, HOME/INSERT/PAGE LAYOUT/FORMULAS/DATA/REVIEW/VIEW, grouped ribbon with launcher corners, green READY status bar, sheet-tab row). Original icons/branding only; never copy Microsoft logos/template art.
+- **Backstage**: `app/js/backstage.js` + `app/css/backstage.css` — FILE opens Home/New/Open/Save/Print/Account/Feedback/Options; 6 original templates; Recent list (names only, localStorage `fmsheets.recent`). Shown automatically on first launch.
+- New commands: Format Painter, font grow/shrink, outdent, Page Layout (margins/orientation/size used by print), Review tab (find/replace/notes/undo).
+- Docs (`docs.html`) loads and renders; docx round-trip not yet tested in browser.
+- Tauri `open_url` command added (http/https/mailto only).
+- Engine tests: 82 pass.
+- **Still TODO**: FmOffice Slides; single `fmoffice` exe + Setup updates for Docs/Slides; text orientation button; Page Break/Layout view buttons are placeholders; Rust code has never been compiled; Setup never run on Windows; pivot is static.

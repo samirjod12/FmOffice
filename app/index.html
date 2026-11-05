@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FmOffice Sheets</title>
+<link rel="icon" href="img/sheets-32.png">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/classic.css">
+<link rel="stylesheet" href="css/backstage.css">
+</head>
+<body>
+<div id="app">
+  <header id="titlebar">
+    <div class="brand"><img src="img/sheets.png" alt="" width="28" height="28"><span class="brand-name">FmOffice <b>Sheets</b></span></div>
+    <div class="quick">
+      <button class="qbtn" data-cmd="save" title="Save (Ctrl+S)"></button>
+      <button class="qbtn" data-cmd="undo" title="Undo (Ctrl+Z)"></button>
+      <button class="qbtn" data-cmd="redo" title="Redo (Ctrl+Y)"></button>
+    </div>
+    <div class="doc-title"><input id="docname" value="Book1" spellcheck="false" aria-label="File name"><span id="savestate"></span></div>
+    <div class="tellme"><span class="ic" id="tellme-ic"></span><input id="tellme" placeholder="Tell me what you want to do…  (Alt+Q)" spellcheck="false"><div id="tellme-list" class="menu hidden"></div></div>
+    <button class="qbtn" id="btn-theme" title="Light / dark mode"></button><span class="signin">Sign in</span>
+  </header>
+  <nav id="tabs"></nav>
+  <section id="ribbon"></section>
+  <div id="formulabar">
+    <input id="namebox" spellcheck="false" aria-label="Name box">
+    <span class="fx" id="fx-btn" title="Insert function"></span>
+    <input id="fbar" spellcheck="false" aria-label="Formula bar" autocomplete="off">
+  </div>
+  <main id="gridwrap">
+    <div id="scroller"><div id="content"><canvas id="cv"></canvas><div id="charts"></div><div id="filters"></div><textarea id="editor" class="hidden" spellcheck="false"></textarea><div id="acbox" class="menu hidden"></div></div></div>
+  </main>
+  <footer id="bottom">
+    <div id="sheetbar"><button id="addsheet" title="New sheet"></button><div id="sheettabs"></div></div>
+    <div id="status"><span class="views"><button id="v-normal" class="on" title="Normal">▦</button><button id="v-layout" title="Page Layout">▤</button><button id="v-break" title="Page Break Preview">▥</button></span><span id="ready">READY</span><span id="stats"></span>
+      <span class="zoom"><button id="zoomout" title="Zoom out">−</button><input type="range" id="zoom" min="50" max="200" step="10" value="100"><button id="zoomin" title="Zoom in">+</button><span id="zoomv">100%</span></span></div>
+  </footer>
+</div>
+<div id="backstage" class="hidden"></div>
+<div id="menu" class="menu hidden"></div>
+<div id="modal" class="hidden"></div>
+<div id="toast" class="hidden"></div>
+<input type="file" id="filein" accept=".xlsx,.xlsm,.csv,.tsv,.txt,.fmsx" class="hidden">
+<script src="js/engine.js"></script>
+<script src="js/xlsx.js"></script>
+<script src="js/core.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/ribbon.js"></script>
+<script src="js/features.js"></script>
+<script src="js/backstage.js"></script>
+</body>
+</html>

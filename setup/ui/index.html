@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>FmOffice Setup</title>
+<style>
+:root{--blue:#264aa3;--blue2:#1d3a85;--bg:#f4f6fb;--text:#1b2233;--muted:#667089;--line:#dde3f0}
+@media(prefers-color-scheme:dark){:root{--bg:#141925;--text:#e8ecf6;--muted:#9aa6c0;--line:#2a3350}}
+*{box-sizing:border-box}body{margin:0;font:14px 'Segoe UI Variable','Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;height:100vh;padding:28px 32px}
+header{display:flex;align-items:center;gap:16px;margin-bottom:18px}header img{width:64px;height:64px}
+h1{margin:0;font-size:22px}h1 span{color:var(--blue)}p.sub{margin:2px 0 0;color:var(--muted)}
+.card{background:color-mix(in srgb,var(--bg) 70%,white 30%);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:14px;margin-bottom:10px}
+.card.soon{opacity:.55}.card b{display:block}.card small{color:var(--muted)}.card input{width:18px;height:18px;accent-color:var(--blue)}
+.dot{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;color:#fff;font-weight:700}
+.g{background:#1f8a4c}.b{background:#2b6fd6}.o{background:#d9822b}
+.grow{flex:1}.path{font-size:12px;color:var(--muted);margin:6px 2px 14px;word-break:break-all}
+.bar{height:10px;background:var(--line);border-radius:6px;overflow:hidden;margin:10px 0 6px}.bar i{display:block;height:100%;width:0;background:var(--blue);transition:width .2s}
+button{border:0;border-radius:10px;padding:11px 22px;font:600 14px inherit;cursor:pointer;background:var(--blue);color:#fff}button:hover{background:var(--blue2)}button.alt{background:transparent;color:var(--text);border:1px solid var(--line)}button:disabled{opacity:.5;cursor:default}
+footer{margin-top:auto;display:flex;gap:10px;justify-content:flex-end;align-items:center}#msg{margin-right:auto;color:var(--muted);font-size:13px}.err{color:#d6432b!important}
+.note{font-size:11px;color:var(--muted);margin-top:12px}
+</style></head><body>
+<header><img src="logo.png" alt=""><div><h1>FmOffice <span>Setup</span></h1><p class="sub">Free, fan-made office apps. Tiny installer — apps download from GitHub.</p></div></header>
+<div id="list"></div>
+<div class="path" id="path"></div>
+<div class="bar" id="barwrap" style="display:none"><i id="bar"></i></div>
+<div id="msg"></div>
+<div class="note">Fan-made project. Not affiliated with or endorsed by Microsoft.</div>
+<footer><span id="msg2"></span><button class="alt" id="un" style="display:none">Uninstall</button><button id="go">Install</button></footer>
+<script>
+const T=window.__TAURI__,inv=(c,a)=>T.core.invoke(c,a),$=s=>document.querySelector(s);
+const APPS=[{id:'sheets',name:'FmOffice Sheets',desc:'Spreadsheets — the Excel-style app',c:'g',l:'S',on:1},{id:'docs',name:'FmOffice Docs',desc:'Coming soon',c:'b',l:'D',soon:1},{id:'slides',name:'FmOffice Slides',desc:'Coming soon',c:'o',l:'P',soon:1}];
+let info;
+(async()=>{info=await inv('get_info');$('#path').textContent='Install location: '+info.installDir;
+ $('#list').innerHTML=APPS.map(a=>`<label class="card ${a.soon?'soon':''}"><input type="checkbox" data-id="${a.id}" ${a.on?'checked':''} ${a.soon?'disabled':''}><div class="dot ${a.c}">${a.l}</div><div class="grow"><b>${a.name}</b><small>${a.desc}${info.installed.includes(a.id)?' · installed':''}</small></div></label>`).join('');
+ if(info.installed.length){$('#go').textContent='Update / Reinstall';$('#un').style.display='';}
+ if(info.uninstall){$('#go').style.display='none';$('#un').style.display='';$('#msg').textContent='Ready to uninstall FmOffice.';}
+ T.event.listen('progress',e=>{const p=e.payload;$('#barwrap').style.display='';$('#bar').style.width=p.percent+'%';$('#msg').textContent=p.stage+' '+p.app+'…';});
+})();
+$('#go').onclick=async()=>{const ids=[...document.querySelectorAll('input:checked')].map(i=>i.dataset.id);if(!ids.length)return;
+ $('#go').disabled=true;$('#msg').classList.remove('err');
+ try{await inv('install',{ids});$('#msg').textContent='Installed! Look for FmOffice Sheets on your desktop and Start menu.';$('#go').textContent='Open Sheets';$('#go').disabled=false;$('#go').onclick=()=>inv('launch',{id:'sheets'});}
+ catch(e){$('#msg').textContent=String(e);$('#msg').classList.add('err');$('#go').disabled=false;$('#barwrap').style.display='none';}};
+$('#un').onclick=async()=>{if(!confirm('Remove FmOffice apps from this PC?'))return;await inv('uninstall');$('#msg').textContent='Uninstalled.';$('#un').style.display='none';$('#go').style.display='none';};
+</script></body></html>

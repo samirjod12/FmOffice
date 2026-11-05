@@ -1,0 +1,37 @@
+/* Backstage (File screen) */
+#backstage{position:fixed;inset:0;z-index:120;display:flex;background:#fff;color:#262626;font:13px/1.4 var(--font);outline:0}
+:root[data-theme=dark] #backstage{background:#1d2227;color:#e7ecf1}
+.bs-side{width:240px;background:#185c37;color:#fff;display:flex;flex-direction:column;padding:6px 0;flex:none}
+.bs-back{align-self:flex-start;margin:4px 10px 14px;width:34px;height:34px;border-radius:50%;border:2px solid #fff;background:transparent;color:#fff;font-size:18px;line-height:1}
+.bs-back:hover{background:rgba(255,255,255,.18)}
+.bs-nav{display:flex;align-items:center;gap:12px;border:0;background:transparent;color:#fff;text-align:left;padding:11px 26px;font-size:15px}
+.bs-nav svg.i{width:18px;height:18px;stroke:#fff}
+.bs-nav:hover{background:rgba(255,255,255,.14)}.bs-nav.on{background:rgba(0,0,0,.22)}
+.bs-sep{height:1px;background:rgba(255,255,255,.25);margin:8px 22px}
+.bs-main{flex:1;min-width:0;overflow:auto;display:flex;flex-direction:column}
+.bs-top{display:flex;justify-content:flex-end;padding:8px 18px;color:#217346}
+.bs-top .signin{color:#217346}
+:root[data-theme=dark] .bs-top .signin{color:#9ce6bf}
+.bs-body{padding:0 48px 40px;max-width:1000px;width:100%}
+.bs-greet{font:300 30px 'Segoe UI Light','Segoe UI',sans-serif;margin:14px 0 22px}
+.bs-h{font-size:16px;margin:14px 0 10px}.bs-h.big{font:300 28px 'Segoe UI Light','Segoe UI',sans-serif;margin:14px 0 20px}
+.bs-tiles{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px}.bs-tiles.wrap{flex-wrap:wrap;overflow:visible}
+.bs-tile{width:150px;border:2px solid transparent;background:transparent;padding:4px;text-align:left;color:inherit;flex:none}
+.bs-tile:hover{border-color:#217346}
+.bs-thumb{display:grid;place-items:center;height:104px;border:1px solid #cfcfcf;font-size:34px;color:#217346;font-weight:300;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+:root[data-theme=dark] .bs-thumb{color:#1d2430}
+.bs-tn{display:block;margin-top:8px;font-size:12.5px}
+.bs-tabs{display:flex;gap:22px;align-items:center;border-bottom:1px solid #d9d9d9;margin:26px 0 12px}
+.bs-tabs button{border:0;background:transparent;color:inherit;padding:6px 0;font-size:14px;border-bottom:2px solid transparent;margin-bottom:-1px}
+.bs-tabs button.on{border-bottom-color:#217346;color:#217346;font-weight:600}
+.bs-more,.bs-empty a{margin-left:auto;color:#217346;cursor:pointer;font-size:13px}.bs-more:hover,.bs-empty a:hover{text-decoration:underline}
+.bs-empty{color:#666;padding:10px 0;max-width:520px}.bs-empty a{margin:0}
+.bs-rlist{display:flex;flex-direction:column}
+.bs-r{display:flex;gap:12px;align-items:center;border:0;background:transparent;text-align:left;padding:8px 10px;color:inherit}
+.bs-r:hover{background:#e8f3ec}:root[data-theme=dark] .bs-r:hover{background:#2a3a31}
+.bs-r svg.i{width:26px;height:26px;color:#217346;stroke-width:1.3}.bs-r small{display:block;color:#777}
+.bs-cards{display:flex;flex-direction:column;gap:8px;max-width:520px}
+.bs-card{display:flex;gap:16px;align-items:center;border:1px solid #d4d4d4;background:transparent;color:inherit;text-align:left;padding:14px 18px}
+.bs-card:hover{border-color:#217346;background:#eef7f1}:root[data-theme=dark] .bs-card:hover{background:#26362d}
+.bs-card svg.i{color:#217346}.bs-card small{display:block;color:#777;margin-top:2px}
+.bs-about{display:flex;gap:18px;align-items:flex-start;max-width:560px}.bs-about p{margin:8px 0}.mut{color:#777}

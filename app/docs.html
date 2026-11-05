@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FmOffice Docs</title><link rel="icon" href="img/office-32.png">
+<link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/office.css"></head>
+<body><div id="app">
+<header id="titlebar"><div class="brand brand-blue"><img src="img/office.png" width="28" height="28" alt=""><span class="brand-name">FmOffice <b>Docs</b></span></div>
+<div class="quick" id="quick"></div>
+<div class="doc-title"><input id="docname" value="Document1" spellcheck="false" aria-label="File name"><span id="savestate"></span></div>
+<button class="qbtn" id="btn-theme" title="Light / dark mode"></button></header>
+<nav id="tabs"></nav>
+<section id="toolbar" class="toolbar"></section>
+<main id="pagewrap"><div id="page" contenteditable="true" spellcheck="true"></div></main>
+<div id="status2"><span id="wc">0 words</span><span class="zoom"><button id="zoomout">−</button><input type="range" id="zoom" min="50" max="200" step="10" value="100"><button id="zoomin">+</button><span id="zoomv">100%</span></span></div>
+</div>
+<div id="menu" class="menu hidden"></div><div id="modal" class="hidden"></div><div id="toast" class="hidden"></div>
+<script src="js/xlsx.js"></script><script src="js/ui.js"></script><script src="js/docx.js"></script><script src="js/docs.js"></script>
+</body></html>
